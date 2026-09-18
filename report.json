@@ -1,0 +1,27 @@
+{
+  "totalStudents": 10,
+  "overallAverageGrade": 85.33,
+  "topStudent": {
+    "id": 3,
+    "name": "Charlie Davis",
+    "averageGrade": 97.67
+  },
+  "courseBreakdown": [
+    {
+      "course": "Biology",
+      "averageGrade": 92.17
+    },
+    {
+      "course": "Computer Science",
+      "averageGrade": 87.11
+    },
+    {
+      "course": "Mathematics",
+      "averageGrade": 84.5
+    },
+    {
+      "course": "Physics",
+      "averageGrade": 51.11
+    }
+  ]
+}

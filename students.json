@@ -1,0 +1,118 @@
+[
+  {
+    "id": 1,
+    "name": "Alice Johnson",
+    "year": 2,
+    "course": "Computer Science",
+    "grades": [
+      88,
+      92,
+      95
+    ],
+    "enrolled": true
+  },
+  {
+    "id": 2,
+    "name": "Bob Smith",
+    "year": 3,
+    "course": "Mathematics",
+    "grades": [
+      75,
+      80,
+      78
+    ],
+    "enrolled": false
+  },
+  {
+    "id": 3,
+    "name": "Charlie Davis",
+    "year": 1,
+    "course": "Computer Science",
+    "grades": [
+      95,
+      98,
+      100
+    ],
+    "enrolled": true
+  },
+  {
+    "id": 4,
+    "name": "Diana Prince",
+    "year": 4,
+    "course": "Physics",
+    "grades": [
+      82,
+      85,
+      90
+    ],
+    "enrolled": true
+  },
+  {
+    "id": 5,
+    "name": "Evan Wright",
+    "year": 2,
+    "course": "Physics",
+    "grades": [],
+    "enrolled": false
+  },
+  {
+    "id": 6,
+    "name": "Fiona Gallagher",
+    "year": 3,
+    "course": "Mathematics",
+    "grades": [
+      91,
+      89,
+      94
+    ],
+    "enrolled": true
+  },
+  {
+    "id": 7,
+    "name": "George Clark",
+    "year": 1,
+    "course": "Computer Science",
+    "grades": [
+      70,
+      74,
+      72
+    ],
+    "enrolled": true
+  },
+  {
+    "id": 8,
+    "name": "Hannah Abbott",
+    "year": 4,
+    "course": "Biology",
+    "grades": [
+      88,
+      90,
+      87
+    ],
+    "enrolled": false
+  },
+  {
+    "id": 9,
+    "name": "Ian Malcolm",
+    "year": 2,
+    "course": "Biology",
+    "grades": [
+      96,
+      94,
+      98
+    ],
+    "enrolled": true
+  },
+  {
+    "id": 10,
+    "name": "Julia Roberts",
+    "year": 3,
+    "course": "Physics",
+    "grades": [
+      65,
+      70,
+      68
+    ],
+    "enrolled": true
+  }
+]

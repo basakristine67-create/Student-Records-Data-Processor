@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview</title>
+    <style>
+/* ============================================================================
+   Cloudairy generated-app design system — SEED Step 0
+   ============================================================================
+
+   WHAT THIS IS
+   One stylesheet, copied verbatim into every generated project. The base
+   (`:root`) IS the "minimal" style. The other four styles are pure token
+   overrides — no new rules, no new selectors, no component CSS. A generated
+   page picks one by setting ONE attribute:
+
+       <html data-variant="corporate">     corporate | dark | elegant | playful
+
+   Omit the attribute and the page is minimal. That default is deliberate: a
+   model that ignores this file entirely still lands on the quality floor.
+
+   HOW IT WAS DESIGNED
+   Four independent proposals were stress-tested by rebuilding three real
+   layouts (marketing page, dashboard, pricing table) under every variant. All
+   three came back `variantOverrideHeld: false` on the FIRST token set — the
+   structure, palette, type, radius and shadow switched cleanly, but authors
+   kept hand-typing the same handful of values. Every token in the "craft"
+   sections below is one of those measured gaps, not a guess.
+
+   THE ONE IDEA WORTH KNOWING: NO-OP EXPRESSIVE HOOKS
+   Tokens like `--surface-accent` default to `var(--surface)` — i.e. to nothing.
+   Minimal renders as though the hook did not exist. Playful sets it to a mint
+   tint and the same markup gains a second surface with no rule change. This is
+   how a variant gets character without the CSS growing per variant.
+
+   RULES FOR ANYONE EDITING THIS FILE
+   1. Variant blocks contain custom-property declarations ONLY. The moment one
+      grows a `display:` or a `grid-template`, variants stop being swappable.
+   2. Never bake one token's value into another as a literal. `--ring` derives
+      from --accent-h/-s/-l so it follows the accent; writing the resolved rgba
+      would silently break every variant.
+   3. Any colour that carries TEXT is solved against the hardest surface it can
+      land on. Colours that only FILL are solved against their own label. These
+      are separate tokens on purpose (--primary vs --brand-text) — collapsing
+      them is what produces unreadable "brand coloured" links.
+   4. --accent-h/-s/-l are DECORATIVE ONLY: tints, rings, gradients, glows.
+      Never derive body or label text from them. Auto-generated hues do not
+      clear contrast (a complementary-hue formula was measured at 1.9:1).
+   5. Breakpoints are NOT tokens. Custom properties cannot be used in media
+      queries — `@media (min-width: var(--bp-md))` is dead code that silently
+      never matches. Type and space scale fluidly instead (clamp, below).
+   ========================================================================= */
+
+/* ── Webfonts ───────────────────────────────────────────────────────────────
+   All five variants' faces in one request. Note `ital@0;1` uses a SEMICOLON
+   between axis values — a comma there returns a 400 and the page silently
+   falls back to Times. */
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;600&family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Karla:wght@400;500;600&family=Nunito+Sans:wght@400;600;800&display=swap");
+
+/* ============================================================================
+   BASE  =  the "minimal" variant, light scheme
+   ========================================================================= */
+:root {
+  color-scheme: light dark;
+
+  /* ── Accent channels (DECORATIVE ONLY — see rule 4) ──────────────────── */
+  --accent-h: 174;
+  --accent-s: 62%;
+  --accent-l: 27%;
+
+  /* ── Surfaces ────────────────────────────────────────────────────────── */
+  --page: hsl(180 14% 98%);
+  --surface: #ffffff;
+  --surface-2: hsl(180 12% 95%);
+  /* No-op hook: an "interesting" surface for heroes, callouts, feature cards.
+     Base points it back at --surface, so minimal shows no second surface. */
+  --surface-accent: var(--surface);
+  --surface-sunken: var(--surface-2);
+  --scrim: hsl(190 30% 8% / 0.55);
+
+  /* ── Text ────────────────────────────────────────────────────────────── */
+  --text: hsl(190 20% 12%);
+  --text-muted: hsl(190 10% 40%);
+  --text-faint: hsl(190 8% 55%);
+  /* Text sitting on --surface-accent. No-op in base. */
+  --on-surface-accent: var(--text);
+
+  /* ── Brand: the fill/text split (rule 3) ─────────────────────────────── */
+  --primary: hsl(174 62% 27%); /* FILL. Judged against --on-primary.        */
+  --primary-hover: hsl(174 62% 22%);
+  --on-primary: #ffffff; /* label on --primary — 6.4:1 here          */
+  --brand-text: hsl(174 66% 24%); /* accent used AS TEXT, judged on --page    */
+
+  /* ── Status: same split, applied per role ────────────────────────────── */
+  --success: hsl(152 55% 30%);
+  --success-soft: hsl(152 44% 94%);
+  --success-ink: hsl(152 60% 22%);
+  --warning: hsl(35 85% 45%);
+  --warning-soft: hsl(38 90% 94%);
+  --warning-ink: hsl(28 80% 28%);
+  --danger: hsl(0 62% 45%);
+  --danger-soft: hsl(0 70% 96%);
+  --danger-ink: hsl(0 65% 35%);
+
+  /* ── Lines ───────────────────────────────────────────────────────────────
+     TWO DIFFERENT CONTRACTS, do not swap them:
+     --border        decorative separator (card edge, table rule). Free to be
+                     faint — WCAG exempts purely decorative boundaries.
+     --border-strong the boundary that IDENTIFIES an interactive control (input
+                     outline, ghost button). WCAG 1.4.11 requires >= 3:1 against
+                     the surface behind it, so every variant's value below is
+                     solved to that. Measured: the first pass shipped these ~74%
+                     light and four of five variants came in at 1.8-2.8:1, i.e.
+                     an input whose edge you cannot reliably see. */
+  --border: hsl(190 12% 88%);
+  --border-strong: hsl(190 12% 56%);
+  --border-width: 1px;
+  --border-width-strong: 2px; /* playful's sticker outline rides on this  */
+
+  /* ── Focus ring — derived, never baked (rule 2) ──────────────────────── */
+  --ring: 0 0 0 3px hsl(var(--accent-h) var(--accent-s) var(--accent-l) / 0.32);
+  --ring-offset: 2px;
+
+  /* ── Radius ──────────────────────────────────────────────────────────── */
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 999px;
+
+  /* ── Shadow ──────────────────────────────────────────────────────────── */
+  --shadow-1: 0 1px 2px hsl(190 25% 12% / 0.06);
+  --shadow-2: 0 2px 8px hsl(190 25% 12% / 0.08);
+  --shadow-3: 0 12px 32px hsl(190 25% 12% / 0.12);
+
+  /* ── Space: 4/8 grid ─────────────────────────────────────────────────── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  /* Density knob: dashboards tighten, marketing pages breathe. */
+  --density: 1;
+  --section-y: calc(var(--space-9) * var(--density));
+  --card-p: calc(var(--space-5) * var(--density));
+
+  /* ── Type: families ──────────────────────────────────────────────────── */
+  /* TWO slots, always. Minimal points both at one family and lets weight do
+     the work — that IS the minimal position, not a shortcut. */
+  --font-display: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Roboto Mono", Menlo, monospace;
+
+  /* ── Type: size, fluid so 360px needs no media query ─────────────────── */
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-md: 1.125rem;
+  --fs-lg: clamp(1.25rem, 1.16rem + 0.38vw, 1.375rem);
+  --fs-xl: clamp(1.5rem, 1.32rem + 0.75vw, 1.75rem);
+  --fs-2xl: clamp(1.75rem, 1.36rem + 1.7vw, 2.25rem);
+  --fs-3xl: clamp(2.125rem, 1.42rem + 3vw, 3rem);
+  --fs-4xl: clamp(2.5rem, 1.35rem + 4.9vw, 4rem);
+
+  /* ── Type: craft. Every token here was hand-typed in all three stress
+        builds before it existed. ──────────────────────────────────────── */
+  --fw-body: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-display: 600;
+  --lh-display: 1.05;
+  --lh-heading: 1.2;
+  --lh-body: 1.6;
+  --lh-ui: 1.35; /* buttons, chips, table cells, nav        */
+  --tracking-display: -0.02em;
+  --tracking-body: 0;
+  --tracking-label: 0.08em; /* uppercase eyebrows — missing in all 3   */
+  --measure-display: 20ch; /* headline wrap                           */
+  --measure-lead: 46ch; /* sub-headline / intro paragraph          */
+  --measure-prose: 68ch; /* running body text                       */
+
+  /* ── Icons ───────────────────────────────────────────────────────────── */
+  --icon-size: 20px;
+  --icon-stroke: 1.75;
+
+  /* ── Motion ──────────────────────────────────────────────────────────── */
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --dur-fast: 120ms;
+  --dur: 200ms;
+
+  /* ── Decoration escape hatch ─────────────────────────────────────────── */
+  /* Some expression is DOM + keyframes, not colour — confetti, blobs, grain.
+     Wrap that markup in an element styled `display: var(--decor-display)` so a
+     variant can switch it on without the markup changing.
+
+     Base is `none` for the same reason --surface-accent is `var(--surface)`:
+     a no-op hook must render as though it did not exist, so restraint is the
+     default and expression is opt in. It also keeps the no-attribute page and
+     `data-variant="minimal"` byte-identical — otherwise "omit the attribute and
+     the page is minimal" is a lie, which a specimen render caught. */
+  --decor-display: none;
+
+  /* ── Shell rails — app screens only ──────────────────────────────────────
+     ADDITIVE, 2026-08-21. Nothing above this line changed.
+
+     A marketing page is a vertical stack of sections and never needed these.
+     An app screen is a FIXED SHELL wrapping one scrolling region, and its rails
+     are structural measurements the space scale does not carry. Each of these
+     was a hand-typed px literal in the dashboard prototype — the same signal
+     that produced every token in the craft sections above.
+
+     Deliberately NOT overridden per variant: a sidebar is the same width
+     whether the page is corporate or playful. Density, type, colour and radius
+     carry the variant; the rails stay put. If a variant ever needs a different
+     rail, that is a layout decision and belongs in the component, not here
+     (rule 1 — variant blocks hold custom properties only).
+
+     Density is already a first-class token above (--density, with --section-y
+     and --card-p derived from it). App screens set --density on the shell
+     element to tighten everything inside in one move; they do not need a
+     second scale. */
+  --shell-sidebar-w: 264px;
+  --shell-topbar-h: 68px;
+  /* minmax() floor for auto-fit card grids — stat rows, tile grids. Must be a
+     real length: a percentage or bare number makes the track collapse. */
+  --grid-min-card: 200px;
+
+  /* ── Stacking order — app screens only ───────────────────────────────────
+     ADDITIVE, 2026-08-21. Named layers so overlays cannot be ordered by
+     whoever picked the larger number. Gaps are deliberate: room to slot a
+     layer between two without renumbering.
+
+     NOTE there is no --z-modal. A native <dialog> opened with showModal()
+     renders in the browser's TOP LAYER, which is above every z-index on the
+     page no matter how large — so giving it one would be a number that never
+     applies and that someone would later "fix" by raising. The corollary is
+     that a toast is BELOW an open modal dialog and cannot be raised above it
+     with z-index; that is correct here, because a modal blocks interaction
+     anyway. */
+  --z-sticky: 5; /* topbar */
+  --z-skip: 10; /* skip link, above sticky chrome */
+  --z-popover: 50; /* menus, popovers */
+  --z-toast: 200; /* toasts, above popovers, below the top layer */
+}
+
+/* Shared dark scheme for every variant that does not force its own.
+   Only role values change; structure tokens are untouched. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --accent-l: 58%;
+
+    --page: hsl(200 18% 8%);
+    --surface: hsl(200 15% 11%);
+    --surface-2: hsl(200 13% 16%);
+    --surface-sunken: hsl(200 20% 6%);
+    --scrim: hsl(200 40% 3% / 0.66);
+
+    --text: hsl(190 15% 94%);
+    --text-muted: hsl(195 10% 66%);
+    --text-faint: hsl(195 8% 52%);
+
+    /* The split earns its keep here: the fill goes BRIGHTER and the label on
+       it flips to near-black, while --brand-text stays legible on --page. */
+    --primary: hsl(174 58% 58%);
+    --primary-hover: hsl(174 58% 66%);
+    --on-primary: hsl(200 20% 9%);
+    --brand-text: hsl(174 58% 62%);
+
+    --success: hsl(152 48% 52%);
+    --success-soft: hsl(152 30% 16%);
+    --success-ink: hsl(152 50% 72%);
+    --warning: hsl(38 80% 58%);
+    --warning-soft: hsl(35 40% 16%);
+    --warning-ink: hsl(38 80% 72%);
+    --danger: hsl(2 65% 60%);
+    --danger-soft: hsl(0 35% 17%);
+    --danger-ink: hsl(2 70% 76%);
+
+    --border: hsl(200 12% 22%);
+    --border-strong: hsl(200 10% 42%);
+
+    /* Dark surfaces swallow blur. Separation comes from the border above, so
+       the shadows step back rather than getting darker. */
+    --shadow-1: 0 1px 2px hsl(0 0% 0% / 0.4);
+    --shadow-2: 0 2px 10px hsl(0 0% 0% / 0.45);
+    --shadow-3: 0 16px 40px hsl(0 0% 0% / 0.55);
+  }
+}
+
+/* ============================================================================
+   VARIANTS — custom properties only, nothing else (rule 1)
+   ========================================================================= */
+
+/* ── minimal ──────────────────────────────────────────────────────────────
+   An explicit no-op, so `data-variant="minimal"` is valid rather than a typo
+   that silently does nothing. */
+[data-variant="minimal"] {
+  /* Intentionally identical to :root. Declared so the attribute is a valid,
+     self-documenting choice rather than a typo that silently does nothing. */
+  --decor-display: none;
+}
+
+/* ── corporate ────────────────────────────────────────────────────────────
+   Institutional, dense, high trust. Serif display over a humanist sans; a
+   deep navy that reads as authority rather than as a SaaS gradient. */
+[data-variant="corporate"] {
+  --accent-h: 214;
+  --accent-s: 72%;
+  --accent-l: 34%;
+
+  --page: hsl(215 24% 97%);
+  --surface: #ffffff;
+  --surface-2: hsl(215 22% 94%);
+  --surface-accent: hsl(215 40% 96%);
+
+  --text: hsl(215 32% 14%);
+  --text-muted: hsl(215 14% 40%);
+  --text-faint: hsl(215 12% 54%);
+
+  --primary: hsl(214 76% 32%);
+  --primary-hover: hsl(214 76% 26%);
+  --on-primary: #ffffff;
+  --brand-text: hsl(214 78% 30%);
+
+  --border: hsl(215 20% 87%);
+  --border-strong: hsl(215 18% 55%);
+
+  --radius-sm: 2px;
+  --radius: 4px;
+  --radius-lg: 6px;
+
+  --shadow-1: 0 1px 1px hsl(215 30% 20% / 0.07);
+  --shadow-2: 0 1px 4px hsl(215 30% 20% / 0.1);
+  --shadow-3: 0 8px 24px hsl(215 30% 20% / 0.13);
+
+  --font-display: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+  --font-body: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --fw-display: 600;
+  --lh-display: 1.12;
+  --tracking-display: -0.01em;
+
+  --density: 0.85;
+  --decor-display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-variant="corporate"] {
+    --page: hsl(215 28% 9%);
+    --surface: hsl(215 24% 12%);
+    --surface-2: hsl(215 20% 17%);
+    --surface-accent: hsl(215 34% 15%);
+    --text: hsl(215 16% 94%);
+    --text-muted: hsl(215 12% 68%);
+    --primary: hsl(214 78% 62%);
+    --primary-hover: hsl(214 82% 70%);
+    --on-primary: hsl(215 40% 10%);
+    --brand-text: hsl(214 80% 70%);
+    --border: hsl(215 16% 24%);
+    --border-strong: hsl(215 14% 44%);
+  }
+}
+
+/* ── elegant ──────────────────────────────────────────────────────────────
+   Editorial. A high-contrast serif at display sizes, near-square corners, no
+   shadows at all — separation is a hairline. Deep plum instead of the usual
+   cream-and-terracotta pairing. */
+[data-variant="elegant"] {
+  --accent-h: 332;
+  --accent-s: 30%;
+  --accent-l: 30%;
+
+  --page: hsl(24 20% 97%);
+  --surface: hsl(30 30% 99%);
+  --surface-2: hsl(24 16% 93%);
+  --surface-accent: hsl(332 16% 95%);
+
+  --text: hsl(330 12% 13%);
+  --text-muted: hsl(330 8% 41%);
+  --text-faint: hsl(330 7% 56%);
+
+  --primary: hsl(332 34% 28%);
+  --primary-hover: hsl(332 36% 21%);
+  --on-primary: hsl(30 30% 98%);
+  --brand-text: hsl(332 38% 30%);
+
+  --border: hsl(24 14% 86%);
+  --border-strong: hsl(330 10% 55%);
+
+  --radius-sm: 0;
+  --radius: 2px;
+  --radius-lg: 3px;
+
+  --shadow-1: none;
+  --shadow-2: none;
+  --shadow-3: 0 24px 60px hsl(330 20% 20% / 0.1);
+
+  --font-display: "Instrument Serif", Georgia, Cambria, "Times New Roman", serif;
+  --font-body: "Karla", ui-sans-serif, system-ui, sans-serif;
+  --fw-display: 400;
+  --lh-display: 0.98;
+  --tracking-display: -0.025em;
+  --tracking-label: 0.14em;
+  --measure-display: 16ch;
+  --measure-prose: 62ch;
+
+  --density: 1.15;
+  --decor-display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-variant="elegant"] {
+    --page: hsl(330 12% 8%);
+    --surface: hsl(330 10% 11%);
+    --surface-2: hsl(330 9% 16%);
+    --surface-accent: hsl(332 16% 14%);
+    --text: hsl(28 18% 93%);
+    --text-muted: hsl(330 8% 66%);
+    --primary: hsl(332 44% 72%);
+    --primary-hover: hsl(332 48% 80%);
+    --on-primary: hsl(330 20% 10%);
+    --brand-text: hsl(332 46% 76%);
+    --border: hsl(330 8% 22%);
+    --border-strong: hsl(330 8% 44%);
+  }
+}
+
+/* ── playful ──────────────────────────────────────────────────────────────
+   Sticker UI: ink outlines, hard offset shadows with no blur, pill radii, a
+   second tinted surface doing real work. The only variant that turns the
+   decoration hook ON. */
+[data-variant="playful"] {
+  --accent-h: 348;
+  --accent-s: 88%;
+  --accent-l: 58%;
+
+  --page: hsl(45 80% 96%);
+  --surface: #ffffff;
+  --surface-2: hsl(45 70% 92%);
+  --surface-accent: hsl(166 60% 90%);
+
+  --text: hsl(255 30% 15%);
+  --text-muted: hsl(255 12% 42%);
+  --text-faint: hsl(255 10% 56%);
+  --on-surface-accent: hsl(174 60% 14%);
+
+  --primary: hsl(348 82% 48%);
+  --primary-hover: hsl(348 82% 40%);
+  --on-primary: #ffffff;
+  --brand-text: hsl(348 76% 40%);
+
+  --border: hsl(255 30% 15%);
+  --border-strong: hsl(255 30% 15%);
+  --border-width: 2px;
+  --border-width-strong: 3px;
+
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 22px;
+
+  /* Hard offset, zero blur — the shadow is an outline's shadow, not depth. */
+  --shadow-1: 2px 2px 0 hsl(255 30% 15%);
+  --shadow-2: 4px 4px 0 hsl(255 30% 15%);
+  --shadow-3: 8px 8px 0 hsl(255 30% 15%);
+
+  --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Nunito Sans", ui-sans-serif, system-ui, sans-serif;
+  --fw-display: 800;
+  --fw-semibold: 800;
+  --lh-display: 1;
+  --tracking-display: -0.03em;
+
+  --icon-stroke: 2.25;
+  --decor-display: block;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-variant="playful"] {
+    --page: hsl(255 32% 11%);
+    --surface: hsl(255 26% 16%);
+    --surface-2: hsl(255 24% 21%);
+    --surface-accent: hsl(166 34% 20%);
+    --text: hsl(45 60% 95%);
+    --text-muted: hsl(255 12% 70%);
+    --on-surface-accent: hsl(166 60% 88%);
+    --primary: hsl(348 92% 66%);
+    --primary-hover: hsl(348 94% 74%);
+    --on-primary: hsl(255 40% 10%);
+    --brand-text: hsl(348 92% 74%);
+    --border: hsl(45 60% 95%);
+    --border-strong: hsl(45 60% 95%);
+    --shadow-1: 2px 2px 0 hsl(45 60% 95%);
+    --shadow-2: 4px 4px 0 hsl(45 60% 95%);
+    --shadow-3: 8px 8px 0 hsl(45 60% 95%);
+  }
+}
+
+/* ── dark ─────────────────────────────────────────────────────────────────
+   DECLARED LAST, AND UNCONDITIONALLY. This is the whole reason for the file's
+   ordering: `[data-variant="dark"]` and `@media (prefers-color-scheme: dark)
+   :root` have the SAME specificity (0,1,0), so source order is the only thing
+   deciding the winner. Placed here, the dark variant stays dark for a visitor
+   whose OS is set to light — which is what asking for the dark style means. */
+[data-variant="dark"] {
+  --accent-h: 32;
+  --accent-s: 92%;
+  --accent-l: 58%;
+
+  --page: hsl(222 24% 7%);
+  --surface: hsl(222 20% 11%);
+  --surface-2: hsl(222 18% 15%);
+  --surface-sunken: hsl(222 28% 5%);
+  --surface-accent: hsl(222 22% 14%);
+  --scrim: hsl(222 40% 2% / 0.7);
+
+  --text: hsl(220 16% 95%);
+  --text-muted: hsl(220 10% 64%);
+  --text-faint: hsl(220 8% 48%);
+  --on-surface-accent: var(--text);
+
+  --primary: hsl(32 94% 60%);
+  --primary-hover: hsl(32 96% 68%);
+  --on-primary: hsl(28 60% 10%);
+  --brand-text: hsl(36 92% 66%);
+
+  --success: hsl(150 52% 55%);
+  --success-soft: hsl(150 28% 15%);
+  --success-ink: hsl(150 55% 74%);
+  --warning: hsl(45 90% 60%);
+  --warning-soft: hsl(42 36% 16%);
+  --warning-ink: hsl(45 88% 74%);
+  --danger: hsl(3 72% 62%);
+  --danger-soft: hsl(0 32% 16%);
+  --danger-ink: hsl(3 76% 76%);
+
+  --border: hsl(222 14% 20%);
+  --border-strong: hsl(222 12% 42%);
+
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-lg: 10px;
+
+  /* Blur is invisible on near-black. Depth reads as a lighter top edge, so
+     these are inset hairlines rather than drop shadows. */
+  --shadow-1: inset 0 1px 0 hsl(0 0% 100% / 0.04);
+  --shadow-2: inset 0 1px 0 hsl(0 0% 100% / 0.06), 0 2px 12px hsl(0 0% 0% / 0.5);
+  --shadow-3: inset 0 1px 0 hsl(0 0% 100% / 0.07), 0 20px 48px hsl(0 0% 0% / 0.6);
+
+  --font-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --fw-display: 700;
+  --lh-display: 1.06;
+  --tracking-display: -0.03em;
+  --tracking-label: 0.1em;
+
+  --density: 0.9;
+  --decor-display: none;
+}
+
+/* ============================================================================
+   The floor: enough base styling that a page which writes NO css of its own is
+   still readable and on-system. Everything below reads tokens and sets nothing
+   a variant would want to change.
+   ========================================================================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-body);
+  line-height: var(--lh-body);
+  letter-spacing: var(--tracking-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--fw-display);
+  line-height: var(--lh-heading);
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: var(--fs-3xl);
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-display);
+  max-width: var(--measure-display);
+}
+h2 {
+  font-size: var(--fs-2xl);
+  letter-spacing: var(--tracking-display);
+}
+h3 {
+  font-size: var(--fs-xl);
+}
+h4 {
+  font-size: var(--fs-md);
+}
+
+p {
+  margin: 0;
+  max-width: var(--measure-prose);
+}
+
+a {
+  color: var(--brand-text);
+  text-underline-offset: 0.18em;
+}
+
+code,
+pre,
+kbd {
+  font-family: var(--font-mono);
+  font-size: 0.9375em;
+}
+
+/* Digits that sit in columns must not wobble between renders. */
+table,
+[data-numeric] {
+  font-variant-numeric: tabular-nums;
+}
+
+img,
+svg,
+video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: var(--border-width-strong) solid var(--primary);
+  outline-offset: var(--ring-offset);
+  box-shadow: var(--ring);
+}
+
+/* Wide content scrolls inside its own box; the page body never scrolls
+   sideways. Generated tables and code blocks are the usual offenders. */
+.scroll-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+</style>
+<script>
+(function () {
+  if (window.__cldErrBridge) return;
+  window.__cldErrBridge = 1;
+  var sent = 0;
+  function send(kind, message, source, line, col) {
+    // Hard cap: a render loop can throw continuously, and a flooded parent is
+    // a hung tab. After this the preview is clearly broken anyway.
+    if (sent++ > 50) return;
+    try {
+      parent.postMessage({
+        __cloudairyPreviewError: true,
+        kind: kind,
+        message: String(message == null ? "" : message).slice(0, 500),
+        source: String(source || "").slice(0, 200),
+        line: line || 0,
+        col: col || 0
+      }, "*");
+    } catch (e) { /* parent gone or blocked — never let reporting break the page */ }
+  }
+  window.addEventListener("error", function (e) {
+    // Resource failures (img/script/link) surface as error events on the
+    // element rather than as script errors, and carry no message.
+    if (e && e.target && e.target !== window && e.target.tagName) {
+      send("resource", e.target.tagName + " failed to load", e.target.src || e.target.href || "", 0, 0);
+      return;
+    }
+    send("runtime", e && e.message, e && e.filename, e && e.lineno, e && e.colno);
+  }, true);
+  window.addEventListener("unhandledrejection", function (e) {
+    var r = e && e.reason;
+    send("promise", (r && (r.message || r)) || "Unhandled promise rejection", "", 0, 0);
+  });
+  var origError = console.error;
+  console.error = function () {
+    try {
+      var parts = [];
+      for (var i = 0; i < arguments.length; i++) {
+        var a = arguments[i];
+        parts.push(a && a.message ? a.message : String(a));
+      }
+      send("console", parts.join(" "), "", 0, 0);
+    } catch (e) {}
+    // Call through — the user's own console must still work.
+    return origError.apply(console, arguments);
+  };
+})();
+</script>
+<script>
+(function () {
+  if (window.__cldNavBridge) return;
+  window.__cldNavBridge = 1;
+  var PAGES = [];
+  var sent = 0;
+
+  function normalize(s) {
+    s = String(s == null ? "" : s).trim().toLowerCase();
+    if (!s) return "";
+    s = s.split("?")[0].split("#")[0];
+    var parts = s.split("/").filter(Boolean);
+    return parts.length ? parts[parts.length - 1] : "";
+  }
+
+  function pageFor(href) {
+    var raw = String(href == null ? "" : href).trim();
+    if (!raw) return null;
+    if (/^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(raw)) return null;
+    if (raw.charAt(0) === "#") return null;
+    var p = normalize(raw);
+    return PAGES.indexOf(p) === -1 ? null : p;
+  }
+
+  document.addEventListener("click", function (e) {
+    // Let the user's own modifier clicks behave normally, and never fight a
+    // handler that already dealt with the event.
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    var el = e.target;
+    while (el && el !== document && el.tagName !== "A") el = el.parentNode;
+    if (!el || el.tagName !== "A") return;
+    if (el.target && el.target !== "" && el.target !== "_self") return;
+
+    // getAttribute, NOT el.href: the resolved property turns "about.html" into
+    // an absolute URL against the opaque origin ("null"), which matches nothing.
+    var raw = el.getAttribute("href");
+
+    // IN-PAGE ANCHOR — scroll it ourselves. Letting the browser handle it
+    // navigates this srcdoc frame to about:srcdoc#id, which blanks the whole
+    // preview. See the note at the top of previewNav.js.
+    if (typeof raw === "string" && raw.charAt(0) === "#") {
+      e.preventDefault();
+      var id = raw.slice(1);
+      if (!id) {
+        try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch (err) { window.scrollTo(0, 0); }
+        return;
+      }
+      var target = null;
+      try {
+        target = document.getElementById(id);
+        if (!target) target = document.getElementsByName(id)[0] || null;
+      } catch (err) { target = null; }
+      if (target && target.scrollIntoView) {
+        try { target.scrollIntoView({ behavior: "smooth", block: "start" }); }
+        catch (err) { target.scrollIntoView(true); }
+      }
+      return;
+    }
+
+    var page = pageFor(raw);
+    if (!page) return;
+
+    e.preventDefault();
+    if (sent++ > 200) return;
+    try {
+      parent.postMessage({ __cloudairyPreviewNav: true, page: page }, "*");
+    } catch (err) { /* parent gone — never let navigation reporting break the page */ }
+  }, true);
+})();
+</script>
+</head>
+<body>
+    <div id="root"></div>
+    <script>
+const fs = require('fs');
+
+// Load student data from students.json
+let students = [];
+
+try {
+  const data = fs.readFileSync('students.json', 'utf8');
+  students = JSON.parse(data);
+} catch (error) {
+  console.error('Error reading students.json:', error.message);
+  process.exit(1);
+}
+
+// ===== FUNCTION 1: Get average grade for a single student =====
+function getAverageGrade(student) {
+  if (!student || typeof student !== 'object') {
+    throw new Error('Invalid student object provided');
+  }
+  
+  if (!Array.isArray(student.grades) || student.grades.length === 0) {
+    return 0;
+  }
+  
+  const sum = student.grades.reduce((acc, grade) => acc + grade, 0);
+  return sum / student.grades.length;
+}
+
+// ===== FUNCTION 2: Get top n students by average grade =====
+function getTopStudents(studentsArray, n) {
+  if (!Array.isArray(studentsArray)) {
+    throw new Error('First argument must be an array of students');
+  }
+  
+  if (typeof n !== 'number' || n < 0) {
+    throw new Error('Second argument must be a non-negative number');
+  }
+  
+  return studentsArray
+    .map(student => ({
+      ...student,
+      averageGrade: getAverageGrade(student)
+    }))
+    .sort((a, b) => b.averageGrade - a.averageGrade)
+    .slice(0, n);
+}
+
+// ===== FUNCTION 3: Group students by course =====
+function groupByCourse(studentsArray) {
+  if (!Array.isArray(studentsArray)) {
+    throw new Error('Argument must be an array of students');
+  }
+  
+  return studentsArray.reduce((grouped, student) => {
+    const course = student.course || 'Unknown';
+    
+    if (!grouped[course]) {
+      grouped[course] = [];
+    }
+    
+    grouped[course].push(student);
+    return grouped;
+  }, {});
+}
+
+// ===== FUNCTION 4: Count enrolled vs not enrolled =====
+function getEnrolledCount(studentsArray) {
+  if (!Array.isArray(studentsArray)) {
+    throw new Error('Argument must be an array of students');
+  }
+  
+  const counts = studentsArray.reduce((acc, student) => {
+    if (student.enrolled === true) {
+      acc.enrolled += 1;
+    } else {
+      acc.notEnrolled += 1;
+    }
+    return acc;
+  }, { enrolled: 0, notEnrolled: 0 });
+  
+  return counts;
+}
+
+// ===== FUNCTION 5: Find a student by name (case-insensitive) =====
+function findStudent(studentsArray, name) {
+  if (!Array.isArray(studentsArray)) {
+    throw new Error('First argument must be an array of students');
+  }
+  
+  if (typeof name !== 'string') {
+    throw new Error('Second argument must be a string');
+  }
+  
+  const searchName = name.toLowerCase().trim();
+  
+  return studentsArray.find(student => 
+    student.name && student.name.toLowerCase().trim() === searchName
+  ) || null;
+}
+
+// ===== FUNCTION 6: Get average grade for each course =====
+function getCourseAverages(studentsArray) {
+  if (!Array.isArray(studentsArray)) {
+    throw new Error('Argument must be an array of students');
+  }
+  
+  const grouped = groupByCourse(studentsArray);
+  
+  const courseAverages = Object.entries(grouped)
+    .map(([course, courseStudents]) => {
+      const totalAverage = courseStudents
+        .map(student => getAverageGrade(student))
+        .reduce((sum, avg) => sum + avg, 0) / courseStudents.length;
+      
+      return {
+        course,
+        average: parseFloat(totalAverage.toFixed(2)),
+        studentCount: courseStudents.length
+      };
+    })
+    .sort((a, b) => b.average - a.average);
+  
+  return courseAverages;
+}
+
+// ===== FUNCTION 7: Export a comprehensive summary =====
+function exportSummary(studentsArray) {
+  if (!Array.isArray(studentsArray)) {
+    throw new Error('Argument must be an array of students');
+  }
+  
+  if (studentsArray.length === 0) {
+    return {
+      totalStudents: 0,
+      overallAverage: 0,
+      topPerformingStudent: null,
+      courseBreakdown: {}
+    };
+  }
+  
+  const allAverages = studentsArray.map(student => getAverageGrade(student));
+  const overallAverage = parseFloat(
+    (allAverages.reduce((sum, avg) => sum + avg, 0) / allAverages.length).toFixed(2)
+  );
+  
+  const topStudent = getTopStudents(studentsArray, 1)[0] || null;
+  
+  const courseBreakdown = getCourseAverages(studentsArray).reduce((acc, item) => {
+    acc[item.course] = {
+      average: item.average,
+      studentCount: item.studentCount
+    };
+    return acc;
+  }, {});
+  
+  return {
+    totalStudents: studentsArray.length,
+    overallAverage,
+    topPerformingStudent: topStudent
+      ? {
+          id: topStudent.id,
+          name: topStudent.name,
+          course: topStudent.course,
+          averageGrade: parseFloat(topStudent.averageGrade.toFixed(2))
+        }
+      : null,
+    courseBreakdown
+  };
+}
+
+// ===== MAIN FUNCTION: Run all analysis and print report =====
+function main() {
+  console.log('\n' + '='.repeat(70));
+  console.log('STUDENT RECORDS DATA ANALYSIS REPORT');
+  console.log('='.repeat(70) + '\n');
+  
+  try {
+    // Section 1: Overall statistics
+    console.log('1. OVERALL STATISTICS');
+    console.log('-'.repeat(70));
+    console.log(`Total students: ${students.length}`);
+    
+    const allAverages = students.map(student => getAverageGrade(student));
+    const overallAverage = students.length > 0
+      ? (allAverages.reduce((sum, avg) => sum + avg, 0) / allAverages.length).toFixed(2)
+      : 0;
+    console.log(`Overall average grade: ${overallAverage}`);
+    console.log();
+    
+    // Section 2: Enrollment status
+    console.log('2. ENROLLMENT STATUS');
+    console.log('-'.repeat(70));
+    const enrollmentCounts = getEnrolledCount(students);
+    console.log(`Enrolled: ${enrollmentCounts.enrolled}`);
+    console.log(`Not enrolled: ${enrollmentCounts.notEnrolled}`);
+    console.log();
+    
+    // Section 3: Top 5 students
+    console.log('3. TOP 5 STUDENTS');
+    console.log('-'.repeat(70));
+    const topStudents = getTopStudents(students, 5);
+    topStudents.forEach((student, index) => {
+      console.log(
+        `${index + 1}. ${student.name} (${student.course}) - Average: ${student.averageGrade.toFixed(2)}`
+      );
+    });
+    console.log();
+    
+    // Section 4: Students grouped by course
+    console.log('4. STUDENTS BY COURSE');
+    console.log('-'.repeat(70));
+    const grouped = groupByCourse(students);
+    Object.entries(grouped).forEach(([course, courseStudents]) => {
+      console.log(`${course}: ${courseStudents.length} student(s)`);
+      courseStudents.forEach(student => {
+        const avg = getAverageGrade(student).toFixed(2);
+        console.log(`  - ${student.name} (Average: ${avg})`);
+      });
+    });
+    console.log();
+    
+    // Section 5: Average grade by course
+    console.log('5. AVERAGE GRADE BY COURSE');
+    console.log('-'.repeat(70));
+    const courseAverages = getCourseAverages(students);
+    courseAverages.forEach(item => {
+      console.log(`${item.course}: ${item.average} (${item.studentCount} student${item.studentCount !== 1 ? 's' : ''})`);
+    });
+    console.log();
+    
+    // Section 6: Example search
+    console.log('6. STUDENT SEARCH EXAMPLE');
+    console.log('-'.repeat(70));
+    const searchName = 'Alice Johnson';
+    const found = findStudent(students, searchName);
+    if (found) {
+      const avg = getAverageGrade(found).toFixed(2);
+      console.log(`Found: ${found.name} (ID: ${found.id}, Course: ${found.course}, Average: ${avg})`);
+    } else {
+      console.log(`Student "${searchName}" not found in database.`);
+    }
+    console.log();
+    
+    // Section 7: Comprehensive summary
+    console.log('7. COMPREHENSIVE SUMMARY');
+    console.log('-'.repeat(70));
+    const summary = exportSummary(students);
+    console.log(JSON.stringify(summary, null, 2));
+    console.log();
+    
+    // Write summary to file (stretch goal)
+    fs.writeFileSync('report.json', JSON.stringify(summary, null, 2));
+    console.log('Report written to report.json');
+    
+    console.log('='.repeat(70) + '\n');
+    
+  } catch (error) {
+    console.error('Error during analysis:', error.message);
+    process.exit(1);
+  }
+}
+
+// Run the program
+main();
+</script>
+<script>
+(function(){
+  var SKIP = /modal|overlay|lightbox|dialog|popup|tooltip|dropdown|menu|toast|backdrop|drawer/i;
+  function reveal(){
+    var nodes = document.querySelectorAll('body *');
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      var cs = window.getComputedStyle(el);
+      if (cs.opacity !== '0') continue;
+      if (cs.position === 'fixed') continue;
+      var name = (el.className && el.className.toString ? el.className.toString() : '') + ' ' + (el.id || '');
+      if (SKIP.test(name)) continue;
+      if (el.closest('[aria-hidden="true"],[hidden],dialog')) continue;
+      if (!(el.textContent || '').trim()) continue;
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+      el.style.visibility = 'visible';
+    }
+  }
+  if (document.readyState === 'complete') setTimeout(reveal, 900);
+  else window.addEventListener('load', function(){ setTimeout(reveal, 900); });
+})();
+</script>
+</body>
+</html>
